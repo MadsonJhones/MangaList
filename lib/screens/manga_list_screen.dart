@@ -258,7 +258,12 @@ class _MangaListScreenState extends State<MangaListScreen> {
                   },
                   child: ListTile(
                     title: Text('${manga.name} - Capítulo ${manga.chapter}'),
-                    subtitle: Text('Lido em: ${_formatDate(manga.date)}'),
+                    subtitle: Text(
+                      'Lido em: ${_formatDate(manga.date)}',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 101, 101, 101), // Cor da data (Lido em: data)
+                      ),
+                    ),
                     onTap: () => _showEditMangaDialog(mangaList.indexOf(manga)), // Abre o diálogo de edição
                   ),
                 );

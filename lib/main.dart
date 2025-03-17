@@ -14,10 +14,14 @@ class MangaListApp extends StatelessWidget {
     return MaterialApp(
       title: 'MangaList',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Colors.grey[900], // Fundo bem escuro
-        primaryColor: Colors.blueGrey, // Cor primária suave
+        scaffoldBackgroundColor: Colors.grey[900], // Fundo escuro
+        primaryColor: Colors.blueGrey, // Cor primária
         floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.blueGrey, // Botão flutuante em tom escuro
+          backgroundColor: Colors.blueGrey,
+        ),
+        textTheme: ThemeData.dark().textTheme.apply(
+          bodyColor: Colors.white, // Configura a cor do texto do corpo
+          displayColor: Colors.blueGrey[600], // Cor para textos de display
         ),
       ),
       home: MangaListScreen(),
