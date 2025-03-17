@@ -45,6 +45,15 @@ class _MangaListScreenState extends State<MangaListScreen> {
     storageService.writeMangaList(mangaList);
   }
 
+  void _updateManga(int index, String newName, int newChapter) {
+    setState(() {
+      final existingManga = mangaList[index];
+      mangaList[index] = MangaEntry(newName, newChapter, existingManga.date); // Mantém a data original
+      _filterList();
+    });
+    storageService.writeMangaList(mangaList);
+  }
+
   void _deleteManga(int index) {
     setState(() {
       mangaList.removeAt(index);
@@ -80,6 +89,46 @@ class _MangaListScreenState extends State<MangaListScreen> {
             onPressed: () {
               if (name.isNotEmpty && chapter.isNotEmpty) {
                 _addOrUpdateManga(name, int.parse(chapter));
+                Navigator.pop(context);
+              }
+            },
+            child: Text('Salvar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditMangaDialog(int index) {
+    final manga = mangaList[index];
+    String name = manga.name;
+    String chapter = manga.chapter.toString();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Editar Mangá'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              decoration: InputDecoration(labelText: 'Nome do mangá'),
+              controller: TextEditingController(text: name),
+              onChanged: (value) => name = value,
+            ),
+            TextField(
+              decoration: InputDecoration(labelText: 'Capítulo'),
+              controller: TextEditingController(text: chapter),
+              keyboardType: TextInputType.number,
+              onChanged: (value) => chapter = value,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              if (name.isNotEmpty && chapter.isNotEmpty) {
+                _updateManga(index, name, int.parse(chapter));
                 Navigator.pop(context);
               }
             },
@@ -199,18 +248,18 @@ class _MangaListScreenState extends State<MangaListScreen> {
                   direction: DismissDirection.endToStart, // Deslizar da direita para a esquerda
                   background: Container(
                     color: Colors.grey[900], // Mesma cor do fundo escuro
-                    alignment: Alignment.centerRight, // Botão alinhado à direita
+                    alignment: Alignment.centerRight,
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Icon(Icons.delete, color: Colors.white), // Ícone branco
                   ),
                   confirmDismiss: (direction) async {
-                    // Impede a exclusão automática e mostra o diálogo
                     _showDeleteConfirmationDialog(manga, mangaList.indexOf(manga));
                     return false; // Não remove até a confirmação
                   },
                   child: ListTile(
                     title: Text('${manga.name} - Capítulo ${manga.chapter}'),
                     subtitle: Text('Lido em: ${_formatDate(manga.date)}'),
+                    onTap: () => _showEditMangaDialog(mangaList.indexOf(manga)), // Abre o diálogo de edição
                   ),
                 );
               },
